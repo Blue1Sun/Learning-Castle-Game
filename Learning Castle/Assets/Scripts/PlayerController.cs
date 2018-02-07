@@ -1,27 +1,29 @@
-﻿using System.Collections;
+﻿	using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+	public class PlayerInfo
+	{
+		public Gender gender;
+		public bool[] isCompleted;
+	}
+
 	public float WalkSpeed = 60;
 	public Gender gender;
 
-	public enum Gender{Woman, Man};
+	public enum Gender {Woman, Man};
 	private Animator CharAnimation;
-	//private BoxCollider2D CharCollider;
 	private Rigidbody2D CharBody;
-	//private Transform CharTrans;
 
-	// Use this for initialization
 	void Start () {
 		CharAnimation = GetComponent<Animator> ();	
-		//CharCollider = GetComponent<BoxCollider2D> ();
 		CharBody = GetComponent<Rigidbody2D> ();	
+
 		CharAnimation.speed = 1.5f;
 	}
-	
-	// Update is called once per frame
+
 	void FixedUpdate () {
 		
 		if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {

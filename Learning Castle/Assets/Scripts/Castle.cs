@@ -16,7 +16,6 @@ public class Castle : MonoBehaviour {
 	private float fadeTime = 5;
 	private bool MouseOver = false;
 
-	// Use this for initialization
 	void Start () {
 		text.color = Color.clear;
 		text.text = myString;	
@@ -24,8 +23,7 @@ public class Castle : MonoBehaviour {
 			this.GetComponent<SpriteRenderer>().sprite = completed;
 		}
 	}
-
-	// Update is called once per frame
+		
 	void Update () {
 		if (MouseOver)
 			text.color = Color.Lerp (text.color, myColor, fadeTime * Time.deltaTime);

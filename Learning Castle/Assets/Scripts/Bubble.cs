@@ -8,12 +8,11 @@ public class Bubble : MonoBehaviour {
 	public AudioClip pop;
 	public int x;
 
-
 	public bool isCorrect = false;
 
 	// Use this for initialization
 	void Start () {
-		this.GetComponentInChildren<Text> ().text = x.ToString ();
+		this.GetComponentInChildren<Text>().text = x.ToString ();
 	}
 	
 	// Update is called once per frame
@@ -22,6 +21,9 @@ public class Bubble : MonoBehaviour {
 			BubbleGame.score--;
 			Destroying ();
 			Destroy (gameObject);
+
+			Text scoreText = GameObject.Find ("Score").GetComponent<Text>();
+			scoreText.text = BubbleGame.score.ToString ();
 		}
 	}
 
@@ -34,6 +36,9 @@ public class Bubble : MonoBehaviour {
 			BubbleGame.score--;
 		}
 		Destroy (gameObject);
+
+		Text scoreText = GameObject.Find ("Score").GetComponent<Text>();
+		scoreText.text = BubbleGame.score.ToString ();
 	}
 
 	void Destroying(){

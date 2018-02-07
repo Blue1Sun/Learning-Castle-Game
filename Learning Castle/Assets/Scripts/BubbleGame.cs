@@ -8,25 +8,43 @@ public class BubbleGame : MonoBehaviour {
 	public GameObject bubblePrefab;
 	public GameObject ex; 
 	public int BubbleNum = 3;
+
+	public static int numOfRounds = 5;
 	public static int score = 0;
 	public static int round = 0;
 
 	private int answer;
+	private LevelManager levelManager;
+	private GameObject window;
+	private Text textRounds;
 
 	private int[] xArr = new int[8];
-
 	private float[] posArr = new float[8];
 
 	// Use this for initialization
 	void Start () {
+		score = 0;
+		round = 0;
 
+		levelManager = FindObjectOfType<LevelManager> ();
+		window = GameObject.Find ("Window");
+		textRounds = GameObject.Find ("Rounds").GetComponent<Text>();
+
+		textRounds.text = "1 / " + numOfRounds;
+		window.SetActive (false);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (!FindObjectOfType<Bubble> ()) {
-			BubbleSpawn ();
-			round++;
+			if (round < numOfRounds && !window.activeSelf) {
+				BubbleSpawn ();
+				round++;
+			}
+			else {
+				GameEnd ();
+			}
+			textRounds.text = round + " / " + numOfRounds;
 		}
 	}
 
@@ -72,5 +90,18 @@ public class BubbleGame : MonoBehaviour {
 			bubble.GetComponent<Bubble> ().isCorrect = true;
 		else
 			bubble.tag = "WrongBubble";
+	}
+
+	void GameEnd (){
+		window.SetActive (true);
+		string resultMess;
+		if (score <= 0)
+			resultMess = "Вам стоит попробовать еще раз. \r\n\r\nВы набрали " + score + " очков.";
+		else if (score > 0 && score < numOfRounds)
+			resultMess = "Отличная работа! \r\n\r\nВы набрали " + score + " очков.";
+		else 
+			resultMess = "Потрясающий результат, Вы не сделали ни одной ошибки! \r\n\r\nВы набрали " + score + " очков.";
+
+		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMess;
 	}
 }
