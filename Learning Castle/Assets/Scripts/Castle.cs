@@ -19,7 +19,8 @@ public class Castle : MonoBehaviour {
 	void Start () {
 		text.color = Color.clear;
 		text.text = myString;	
-		if (isCompleted) {
+		bool[] isCompleted = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().isCompleted;
+		if (isCompleted[castleNum-1]) {
 			this.GetComponent<SpriteRenderer>().sprite = completed;
 		}
 	}
