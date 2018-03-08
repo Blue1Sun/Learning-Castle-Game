@@ -7,20 +7,15 @@ public class PlayerData : MonoBehaviour {
 
 	public Gender gender;
 	public bool[] isCompleted;
+	public bool[] completedTests;
 
 	public enum Gender {Woman, Man};
 
-	// Use this for initialization
 	void Start () {
 		DontDestroyOnLoad(gameObject);
 	}
 
 	void login() {
 		SceneManager.LoadScene ("Map");
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }
