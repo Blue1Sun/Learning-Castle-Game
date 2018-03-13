@@ -15,7 +15,8 @@ public class Menu : MonoBehaviour {
 	private float fadeTime = 5;
 
 	void Start(){
-		bool testCompleted = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().completedTests [castle - 1];
+		PlayerData playerData = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
+		bool testCompleted = playerData.completedTests [castle - 1];
 		string minigameRules;
 
 		rulesText = GameObject.Find ("Rules").GetComponentInChildren<Text> ();
@@ -24,12 +25,14 @@ public class Menu : MonoBehaviour {
 
 		// MiniGame button
 		if (castle == 1)
-			minigameRules = "Нажимайте на пузырьки, которые содержат число, соответствующее квадратному корню в задании";
+			minigameRules = "Нажимайте на пузырьки, которые содержат число, соответствующее квадратному корню в задании.";
 		else {
-			minigameRules = "Миниигра отсутствует";
+			minigameRules = "Миниигра отсутствует.";
 			GameObject.Find ("MiniGame").GetComponentInChildren<Button> ().interactable = false;
 			GameObject.Find ("MiniGame").GetComponentInChildren<Text> ().color = new Color (0.2f, 0.2f, 0.2f, 0.5f);
 		}
+		if (playerData.minigameRecord [castle - 1] > -100)
+			minigameRules += " <b>Ваш текущий рекорд: " + playerData.minigameRecord [castle - 1] + "</b>";
 		rulesText.text = minigameRules;
 
 		// Test button
@@ -37,6 +40,9 @@ public class Menu : MonoBehaviour {
 			GameObject.Find ("Test").GetComponent<Button> ().interactable = false;
 			GameObject.Find ("Test").GetComponentInChildren<Text> ().color = new Color (0.2f, 0.2f, 0.2f, 0.5f);
 		}
+
+		if (playerData.completedTests [castle - 1] && (playerData.minigameRecord [castle - 1] != -100 || !Castle.hasMinigame [castle - 1]))
+			playerData.isCompleted [castle - 1] = true;
 	}
 
 	void Update () {
