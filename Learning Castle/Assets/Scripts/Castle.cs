@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class Castle : MonoBehaviour {
 
+	public static bool[] hasMinigame = { true, false };
+
 	public Text text;
 	public string castleName = "NoName";
 	public Color nameColor = Color.white;
