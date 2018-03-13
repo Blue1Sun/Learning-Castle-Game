@@ -106,7 +106,8 @@ public class BubbleGame : MonoBehaviour {
 			resultMessage = "Отличная работа! \r\n\r\nВы набрали " + score + " очков.";
 		else 
 			resultMessage = "Потрясающий результат, Вы не сделали ни одной ошибки! \r\n\r\nВы набрали " + score + " очков.";
-
+		if (score > GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().minigameRecord [Menu.castle - 1])
+			GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().minigameRecord [Menu.castle - 1] = score;
 		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMessage;
 	}
 }

@@ -8,6 +8,7 @@ public class PlayerData : MonoBehaviour {
 	public Gender gender;
 	public bool[] isCompleted;
 	public bool[] completedTests;
+	public int[] minigameRecord;
 
 	public enum Gender {Woman, Man};
 
