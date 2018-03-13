@@ -13,6 +13,17 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		charAnimation = GetComponent<Animator> ();	
 		charBody = GetComponent<Rigidbody2D> ();
+		if (Menu.castle != 0) {
+			Vector3 lastCastlePos;
+
+			if (Menu.castle == 1)
+				lastCastlePos = GameObject.Find ("Castle").GetComponent<Transform> ().position;
+			else
+				lastCastlePos = GameObject.Find ("Castle (" + (Menu.castle - 1) + ")").GetComponent<Transform> ().position;
+
+			this.GetComponent<Transform> ().position = new Vector3 (lastCastlePos.x, lastCastlePos.y - 1, 0);
+		}
+		
 
 		charAnimation.speed = 1.5f;
 	}
