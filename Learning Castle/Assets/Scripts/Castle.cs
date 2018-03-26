@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class Castle : MonoBehaviour {
 
-	public static bool[] hasMinigame = { true, false };
+	public static bool[] hasMinigame = { true, true, false }; //TODO: don't forget to fill it!!!
 
 	public Text text;
 	public string castleName = "NoName";

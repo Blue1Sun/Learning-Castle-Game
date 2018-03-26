@@ -37,7 +37,13 @@ public class Test : MonoBehaviour {
 	void Start () {
 		QuestionsCreation ();
 		if (Menu.castle == 1)
-			GameObject.Find ("Title").GetComponent<Text> ().text = "Квадратный корень";		
+			GameObject.Find ("Title").GetComponent<Text> ().text = "Квадратный корень";	
+		else if (Menu.castle == 2)
+			GameObject.Find ("Title").GetComponent<Text> ().text = "Квадратные уравнения";	
+		else if (Menu.castle == 3)
+			GameObject.Find ("Title").GetComponent<Text> ().text = "Графики";
+		//TODO: don't forget to fill it!!!
+
 		curQuestion = -1;
 
 		toggles = GameObject.Find ("Toggles");

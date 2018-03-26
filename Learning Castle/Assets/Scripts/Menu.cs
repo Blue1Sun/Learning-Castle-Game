@@ -26,10 +26,12 @@ public class Menu : MonoBehaviour {
 		// MiniGame button
 		if (castle == 1)
 			minigameRules = "Нажимайте на пузырьки, которые содержат число, соответствующее квадратному корню в задании.";
+		else if (castle == 2)
+			minigameRules = "Нажимайте на облака, которые содержат два корня, соответствующие ответу на квадратное уравнение.";
 		else {
 			minigameRules = "Миниигра отсутствует.";
 			GameObject.Find ("MiniGame").GetComponentInChildren<Button> ().interactable = false;
-			GameObject.Find ("MiniGame").GetComponentInChildren<Text> ().color = new Color (0.2f, 0.2f, 0.2f, 0.5f);
+			GameObject.Find ("Button").GetComponentInChildren<Text> ().color = new Color (0.2f, 0.2f, 0.2f, 0.5f);
 		}
 		if (playerData.minigameRecord [castle - 1] > -100)
 			minigameRules += " <b>Ваш текущий рекорд: " + playerData.minigameRecord [castle - 1] + "</b>";
@@ -60,7 +62,11 @@ public class Menu : MonoBehaviour {
 			SceneManager.LoadScene ("Bubbles");
 			BubbleGame.numOfRounds = 10;
 		} 
-		// Other minigame loading
+		else if (castle == 2) {
+			SceneManager.LoadScene ("Clouds");
+			BubbleGame.numOfRounds = 5;
+		} 
+		// TODO: don't forget to fill it with new minigames!!!
 	}
 
 	public void OnMouseOver()
