@@ -9,9 +9,12 @@ public class Bubble : MonoBehaviour {
 	public AudioClip pop;
 	public int x;
 	public bool isCorrect = false;
+	public string x1x2 = "";
 
 	void Start () {
 		this.GetComponentInChildren<Text>().text = x.ToString ();
+		if (x1x2 != "")
+			this.GetComponentInChildren<Text>().text = x1x2;
 	}
 
 	void Update () {
