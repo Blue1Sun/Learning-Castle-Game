@@ -16,14 +16,18 @@ public class BubbleGame : MonoBehaviour {
 	private GameObject window;
 	private Text textRounds;
 	private int curRound = 0;
-	private int answer;
+	private int minRand, maxRand;
 
 	private int[] xArr = new int[8];
 	private float[] posArr = new float[8];
+	private string[] xxArr = new string[8];
 
 	void Start () {
 		score = 0;
 		curRound = 0;
+
+		minRand = 0;
+		maxRand = 10;
 
 		window = GameObject.Find ("Window");
 		window.SetActive (false);
@@ -45,16 +49,78 @@ public class BubbleGame : MonoBehaviour {
 		}
 	}
 
-	void RandNum () {
+	void RandSqrt () {
+		if(curRound != 0){
+			minRand += 2;
+			maxRand += 2;
+		}
+		int answer = 0;
+
 		// Create random numbers
 		for (int i = 0; i < bubbleNum; i++) {
 			int num;
 			do {
-				num = Random.Range (0, 20); 
+				num = Random.Range (minRand, maxRand); 
 			} while (System.Array.IndexOf (xArr, num) > -1); // All answers need to be different
 			xArr [i] = num;
-			answer = num; // Last random number will be correct answer
+			answer = num;
 		}
+
+		exercise.GetComponent<Text> ().text = "√" + (answer * answer).ToString (); 
+	}
+
+	void RandQuadEq () {
+		// Create random numbers
+		int a, b, c, x1, x2;
+
+		a = Random.Range (1, 3); 
+		x1 = Random.Range (-10, 10); 
+		x2 = Random.Range (-10, 10); 
+		b = -((x1 + x2) * a);
+		c = x1 * x2 * a;
+
+		xxArr [bubbleNum - 1] = "x1 = " + x1 + "; x2 = " + x2;
+
+		for (int i = 0; i < bubbleNum - 1; i++) {
+			int fakeX1, fakeX2;
+			do {
+				fakeX1 = Random.Range (x1 - 2, x1 + 2); 
+				fakeX2 = Random.Range (x2 - 2, x2 + 2);
+			} while (System.Array.IndexOf (xxArr, "x1 = " + fakeX1 + "; x2 = " + fakeX2) != -1 ||
+			         System.Array.IndexOf (xxArr, "x1 = " + fakeX2 + "; x2 = " + fakeX1) != -1); // All answers need to be different
+
+			xxArr [i] = "x1 = " + fakeX1 + "; x2 = " + fakeX2;
+		}
+
+		exercise.GetComponent<Text> ().text = formatEx (a, b, c); 
+	}
+
+	string formatEx(int a, int b, int c){
+		string formated = "";
+
+		if (a == 1)
+			formated += "x² ";
+		else
+			formated += a + "x² ";
+
+		if (b == -1)
+			formated += "- x ";
+		else if (b < 0)
+			formated += "- " + -b + "x ";
+		else if (b == 1)
+			formated += "+ x ";
+		else if (b == 0)
+			formated += "";
+		else
+			formated += "+ " + b + "x ";
+		
+		if (c < 0)
+			formated += "- " + -c + " = 0";
+		else if (c == 0)
+			formated += "= 0";
+		else
+			formated += "+ " + c + " = 0";
+		return formated;
 	}
 
 	void RandPos () {
@@ -68,20 +134,25 @@ public class BubbleGame : MonoBehaviour {
 		}
 	}
 
-	// TODO more randomize functions for different exercise
-
 	void BubbleRand () {
-		RandNum ();
+		if (Menu.castle == 1)
+			RandSqrt ();
+		if (Menu.castle == 2)
+			RandQuadEq ();
 		RandPos ();
 
-		exercise.GetComponent<Text> ().text = "√" + (answer * answer).ToString (); // TODO different exercise creation 
-
 		for (int i = 0; i < bubbleNum; i++) {
-			BubbleSpawn (posArr[i], xArr[i]);
+			bool isCorrect = false;
+			if (i == bubbleNum - 1)
+				isCorrect = true;
+			if (Menu.castle == 1)
+				BubbleSpawn (posArr[i], xArr[i], isCorrect);
+			if (Menu.castle == 2)
+				BubbleSpawn (posArr[i], xxArr[i], isCorrect);
 		}
 	}
 
-	void BubbleSpawn (float pos, int value) {
+	void BubbleSpawn (float pos, int value, bool isCorrect) {
 		Vector2 pushDown = new Vector2 (0, Random.Range(-10, -40));
 
 		GameObject bubble = Instantiate(bubblePrefab, new Vector3(pos, 7, 0), Quaternion.identity) as GameObject;
@@ -89,7 +160,21 @@ public class BubbleGame : MonoBehaviour {
 		bubble.transform.parent = this.transform;
 		bubble.GetComponent<Bubble> ().x = value;
 
-		if (answer == value)
+		if (isCorrect)
+			bubble.GetComponent<Bubble> ().isCorrect = true;
+		else
+			bubble.tag = "WrongBubble";
+	}
+
+	void BubbleSpawn (float pos, string value, bool isCorrect){
+
+		GameObject bubble = Instantiate(bubblePrefab, new Vector3(pos, 7, 0), Quaternion.identity) as GameObject;
+		bubble.transform.parent = this.transform;
+		bubble.GetComponent<Bubble> ().x1x2 = value;
+		bubble.GetComponent<Rigidbody2D> ().velocity = new Vector3(0, -0.35f, 0);
+		bubble.GetComponent<SpriteRenderer> ().color = Color.HSVToRGB (Random.Range (0f, 1f), 0.4f, 1);
+
+		if (isCorrect)
 			bubble.GetComponent<Bubble> ().isCorrect = true;
 		else
 			bubble.tag = "WrongBubble";
