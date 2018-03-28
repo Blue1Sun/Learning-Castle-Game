@@ -24,10 +24,13 @@ public class Menu : MonoBehaviour {
 		rulesText.color = rulesImage.color = Color.clear;
 
 		// MiniGame button
+		//TODO: don't forget to fill it!!!
 		if (castle == 1)
 			minigameRules = "Нажимайте на пузырьки, которые содержат число, соответствующее квадратному корню в задании.";
 		else if (castle == 2)
 			minigameRules = "Нажимайте на облака, которые содержат два корня, соответствующие ответу на квадратное уравнение.";
+		else if (castle == 4)
+			minigameRules = "Нажимайте на стрелки, под которыми написан перевод заданного слова.";
 		else {
 			minigameRules = "Миниигра отсутствует.";
 			GameObject.Find ("MiniGame").GetComponentInChildren<Button> ().interactable = false;
@@ -66,7 +69,18 @@ public class Menu : MonoBehaviour {
 			SceneManager.LoadScene ("Clouds");
 			BubbleGame.numOfRounds = 5;
 		} 
+		else if (castle == 4) {
+			SceneManager.LoadScene ("EngGuitarHero");
+			BubbleGame.numOfRounds = 5;
+		} 
 		// TODO: don't forget to fill it with new minigames!!!
+	}
+
+	public void ExitMenu(){
+		if (castle < 4)
+			SceneManager.LoadScene ("Map");
+		else
+			SceneManager.LoadScene ("Map 1");
 	}
 
 	public void OnMouseOver()
