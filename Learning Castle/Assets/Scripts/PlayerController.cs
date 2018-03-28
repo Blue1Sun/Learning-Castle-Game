@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
@@ -16,10 +17,10 @@ public class PlayerController : MonoBehaviour {
 		if (Menu.castle != 0) {
 			Vector3 lastCastlePos;
 
-			if (Menu.castle == 1)
+			if (Menu.castle % 3 == 1)
 				lastCastlePos = GameObject.Find ("Castle").GetComponent<Transform> ().position;
 			else
-				lastCastlePos = GameObject.Find ("Castle (" + (Menu.castle - 1) + ")").GetComponent<Transform> ().position;
+				lastCastlePos = GameObject.Find ("Castle (" + ((Menu.castle + 1) % 3 + 1) + ")").GetComponent<Transform> ().position;
 
 			this.GetComponent<Transform> ().position = new Vector3 (lastCastlePos.x, lastCastlePos.y - 1, 0);
 		}
@@ -29,9 +30,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		PlayerData.Gender gender = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().gender;
+		string gender = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().gender;
 		string cGen = "";
-		if (gender == PlayerData.Gender.Woman)
+		if (gender.Equals("f"))
 			cGen = "W";
 
 		if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {
@@ -59,8 +60,7 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	bool canPlayerMove(Vector2 direction)
-	{
+	bool canPlayerMove(Vector2 direction){
 		bool flag = true;
 		float distance = this.transform.position.z - Camera.main.transform.position.z;
 
@@ -75,5 +75,9 @@ public class PlayerController : MonoBehaviour {
 			flag = false;
 
 		return flag;
+	}
+	public void goToSubjects(){
+		Menu.castle = 0;
+		SceneManager.LoadScene ("Subjects");
 	}
 }
