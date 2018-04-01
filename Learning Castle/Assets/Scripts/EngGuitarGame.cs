@@ -52,6 +52,7 @@ public class EngGuitarGame : MonoBehaviour {
 
 	private int curRound;
 	private int score;
+	private string mistakes;
 
 	private GameObject window;
 
@@ -61,6 +62,7 @@ public class EngGuitarGame : MonoBehaviour {
 	void Start () {
 		curRound = 0;
 		score = 0;
+		mistakes = "<b>Исправление ошибок:</b> ";
 
 		DictionaryCreation ();
 
@@ -127,7 +129,6 @@ public class EngGuitarGame : MonoBehaviour {
 		engRusDict [27] = new EngRusDict ("pitiable", "трупный", "многословный", "жалкий", "громоздкий", 2);
 		engRusDict [28] = new EngRusDict ("haul", "тащить", "скрываться", "представлять", "кричать", 0);
 		engRusDict [29] = new EngRusDict ("daze", "бухта", "двор", "ловкость", "изумление", 3);
-
 	}
 
 	void loadInfo(){
@@ -184,9 +185,13 @@ public class EngGuitarGame : MonoBehaviour {
 
 	void CheckingAnswer(string answer){
 
-		if (GameObject.Find (answer).tag == "CorrectArrow"){
+		if (GameObject.Find (answer).tag == "CorrectArrow") {
 			score++;
-			GameObject.Find ("Score").GetComponent<Text> ().text = score.ToString();
+			GameObject.Find ("Score").GetComponent<Text> ().text = score.ToString ();
+		} 
+		else {
+			GameObject correctArrow = GameObject.FindGameObjectWithTag ("CorrectArrow").GetComponent<Transform>().parent.gameObject;
+			mistakes += GameObject.Find ("EnglishWord").GetComponent<Text> ().text + " — " + correctArrow.GetComponentInChildren<Text> ().text + "; ";
 		}
 
 		NextRound ();
@@ -224,5 +229,8 @@ public class EngGuitarGame : MonoBehaviour {
 			GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().minigameRecord [Menu.castle - 1] = score;
 		
 		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMessage;
+
+		if (score < numOfRounds) 
+			GameObject.Find("Mistakes").GetComponent<Text>().text = mistakes;
 	}
 }
