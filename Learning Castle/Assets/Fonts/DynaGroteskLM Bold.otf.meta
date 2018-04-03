@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 589e4a05717bead46a5aa24178c3e30e
+timeCreated: 1522753085
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: DynaGrotesk LM
+  fontNames:
+  - DynaGrotesk LM
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
