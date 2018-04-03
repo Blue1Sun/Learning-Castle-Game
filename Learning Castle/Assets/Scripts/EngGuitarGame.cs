@@ -74,22 +74,21 @@ public class EngGuitarGame : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.LeftArrow)) {
-			Destroy (GameObject.Find ("Line"));
-			AnimateArrow ("LeftArrow");
-		} 
-		else if (Input.GetKeyDown (KeyCode.S) || Input.GetKeyDown (KeyCode.DownArrow)) {
-			AnimateArrow ("DownArrow");
-		} 
-		else if (Input.GetKeyDown (KeyCode.W) || Input.GetKeyDown (KeyCode.UpArrow)) {
-			AnimateArrow ("UpArrow");
-		} 
-		else if (Input.GetKeyDown (KeyCode.D) || Input.GetKeyDown (KeyCode.RightArrow)) {
-			AnimateArrow ("RightArrow");
-		}
+		if (curRound <= numOfRounds) {
+			if (Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.LeftArrow)) {
+				Destroy (GameObject.Find ("Line"));
+				AnimateArrow ("LeftArrow");
+			} else if (Input.GetKeyDown (KeyCode.S) || Input.GetKeyDown (KeyCode.DownArrow)) {
+				AnimateArrow ("DownArrow");
+			} else if (Input.GetKeyDown (KeyCode.W) || Input.GetKeyDown (KeyCode.UpArrow)) {
+				AnimateArrow ("UpArrow");
+			} else if (Input.GetKeyDown (KeyCode.D) || Input.GetKeyDown (KeyCode.RightArrow)) {
+				AnimateArrow ("RightArrow");
+			}
 
-		if (GameObject.Find ("Line") && GameObject.Find ("Line").GetComponent<Transform> ().position.y < -3.5f)
-			NextRound ();
+			if (GameObject.Find ("Line") && GameObject.Find ("Line").GetComponent<Transform> ().position.y < -3.5f)
+				NextRound ();
+		}
 	}
 
 	void DictionaryCreation(){
