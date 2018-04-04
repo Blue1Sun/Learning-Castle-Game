@@ -528,7 +528,6 @@ namespace WebSocketSharp.Net
 
     public ResponseStream GetResponseStream ()
     {
-      // TODO: Can we get this stream before reading the input?
 
       if (_outputStream != null || _socket == null)
         return _outputStream;

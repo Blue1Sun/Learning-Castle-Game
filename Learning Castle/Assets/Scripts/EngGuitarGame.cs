@@ -165,7 +165,7 @@ public class EngGuitarGame : MonoBehaviour {
 			GameObject.Find ("RightArrow").tag = "CorrectArrow";
 			break;
 		default:
-			Debug.LogError ("Wrong index of correct answer");
+			Debug.LogWarning ("Wrong index of correct answer");
 			break;
 		}
 	}

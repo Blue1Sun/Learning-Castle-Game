@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Bubble : MonoBehaviour {
 
 	public AudioClip pop;
+
 	public int x;
 	public bool isCorrect = false;
 	public string x1x2 = "";

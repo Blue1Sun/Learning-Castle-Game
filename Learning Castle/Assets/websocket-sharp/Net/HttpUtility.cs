@@ -398,9 +398,6 @@ namespace WebSocketSharp.Net
     private static void urlEncode (char c, Stream result, bool unicode)
     {
       if (c > 255) {
-        // FIXME: What happens when there is an internal error?
-        //if (!unicode)
-        //  throw new ArgumentOutOfRangeException ("c", c, "Greater than 255.");
 
         result.WriteByte ((byte) '%');
         result.WriteByte ((byte) 'u');

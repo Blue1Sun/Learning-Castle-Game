@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BubbleGame : MonoBehaviour {
 
-	public static int numOfRounds = 5;
+
 	public static int score = 0;
 
 	public GameObject bubblePrefab;
@@ -17,12 +17,18 @@ public class BubbleGame : MonoBehaviour {
 	private Text textRounds;
 	private int curRound = 0;
 	private int minRand, maxRand;
+	private int numOfRounds = 5;
 
 	private int[] xArr = new int[8];
 	private float[] posArr = new float[8];
 	private string[] xxArr = new string[8];
 
 	void Start () {
+		if (Menu.castle == 1)
+			numOfRounds = 10;
+		else if (Menu.castle == 2)
+			numOfRounds = 5;
+
 		score = 0;
 		curRound = 0;
 

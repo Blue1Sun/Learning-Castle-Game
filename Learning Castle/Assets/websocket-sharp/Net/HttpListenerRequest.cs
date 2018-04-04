@@ -127,7 +127,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public int ClientCertificateError {
       get {
-        return 0; // TODO: Always returns 0.
+        return 0; 
       }
     }
 
@@ -395,7 +395,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string RawUrl {
       get {
-        return _url.PathAndQuery; // TODO: Should decode?
+        return _url.PathAndQuery; 
       }
     }
 
@@ -749,7 +749,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public IAsyncResult BeginGetClientCertificate (AsyncCallback requestCallback, object state)
     {
-      // TODO: Not implemented.
       throw new NotImplementedException ();
     }
 
@@ -772,7 +771,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public X509Certificate2 EndGetClientCertificate (IAsyncResult asyncResult)
     {
-      // TODO: Not implemented.
       throw new NotImplementedException ();
     }
 
@@ -787,7 +785,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public X509Certificate2 GetClientCertificate ()
     {
-      // TODO: Not implemented.
       throw new NotImplementedException ();
     }
 
