@@ -50,15 +50,8 @@ public class Test : MonoBehaviour {
 
 	void Start () {
 		QuestionsCreation ();
-		if (Menu.castle == 1)
-			GameObject.Find ("Title").GetComponent<Text> ().text = "Квадратный корень";	
-		else if (Menu.castle == 2)
-			GameObject.Find ("Title").GetComponent<Text> ().text = "Квадратные уравнения";	
-		else if (Menu.castle == 3)
-			GameObject.Find ("Title").GetComponent<Text> ().text = "Графики";
-		else if (Menu.castle == 4)
-			GameObject.Find ("Title").GetComponent<Text> ().text = "Словарный запас";
-		//TODO: don't forget to fill it!!!
+
+		setTestTitle ();
 
 		curQuestion = -1;
 
@@ -85,6 +78,19 @@ public class Test : MonoBehaviour {
 
 		for (int i = 0; i < questions.Length; i++)
 			playerAnswers.answers [i] = "";
+	}
+
+	void setTestTitle(){
+		//TODO: don't forget to fill it!!!
+		string[] testTitles = new string[]{ "Квадратный корень", "Квадратные уравнения", "Графики", "Словарный запас", "Артикли" };
+
+		if (Menu.castle <= testTitles.Length) {
+			GameObject.Find ("Title").GetComponent<Text> ().text = testTitles [Menu.castle - 1];
+		} 
+		else {
+			GameObject.Find ("Title").GetComponent<Text> ().text = "Нет названия";
+			Debug.LogWarning ("No title for " +  Menu.castle + " test");
+		}		
 	}
 
 	public void PrevQuestion(){
@@ -125,7 +131,7 @@ public class Test : MonoBehaviour {
 			*/
 			#endregion
 
-			SceneManager.LoadScene ("Menu"); // TODO sending answers to server
+			SceneManager.LoadScene ("Menu");
 		}
 		else {
 			qtype = questions [curQuestion].type;
