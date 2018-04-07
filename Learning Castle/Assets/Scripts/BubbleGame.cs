@@ -6,18 +6,24 @@ using UnityEngine.UI;
 
 public class BubbleGame : MonoBehaviour {
 
-
-	public static int score = 0;
-
-	public GameObject bubblePrefab;
-	public GameObject exercise; 
-	public int bubbleNum = 6;
+	[SerializeField]
+	private GameObject bubblePrefab = null;
+	[SerializeField]
+	private int bubbleNum = 6;
 
 	private GameObject window;
 	private Text textRounds;
+	private Text exercise;
+
 	private int curRound = 0;
 	private int minRand, maxRand;
 	private int numOfRounds = 5;
+	private int score = 0;
+
+	public int Score {
+		get	{ return score;	}
+		set	{ score = value; }
+	}
 
 	private int[] xArr = new int[8];
 	private float[] posArr = new float[8];
@@ -40,6 +46,8 @@ public class BubbleGame : MonoBehaviour {
 
 		textRounds = GameObject.Find ("Rounds").GetComponent<Text>();
 		textRounds.text = "1 / " + numOfRounds;
+
+		exercise = GameObject.Find ("Exercise").GetComponent<Text> ();
 	}
 
 	void Update () {
@@ -72,7 +80,7 @@ public class BubbleGame : MonoBehaviour {
 			answer = num;
 		}
 
-		exercise.GetComponent<Text> ().text = "√" + (answer * answer).ToString (); 
+		exercise.text = "√" + (answer * answer).ToString (); 
 	}
 
 	void RandQuadEq () {
@@ -98,7 +106,7 @@ public class BubbleGame : MonoBehaviour {
 			xxArr [i] = "x1 = " + fakeX1 + "; x2 = " + fakeX2;
 		}
 
-		exercise.GetComponent<Text> ().text = formatEx (a, b, c); 
+		exercise.text = formatEx (a, b, c); 
 	}
 
 	string formatEx(int a, int b, int c){
@@ -150,7 +158,7 @@ public class BubbleGame : MonoBehaviour {
 		for (int i = 0; i < bubbleNum; i++) {
 			bool isCorrect = false;
 			if (i == bubbleNum - 1)
-				isCorrect = true;
+				isCorrect = true; // Last bubble is correct
 			if (Menu.castle == 1)
 				BubbleSpawn (posArr[i], xArr[i], isCorrect);
 			if (Menu.castle == 2)
@@ -159,31 +167,31 @@ public class BubbleGame : MonoBehaviour {
 	}
 
 	void BubbleSpawn (float pos, int value, bool isCorrect) {
+		GameObject bubble = BubbleInst (pos, isCorrect);
+		bubble.GetComponent<Bubble> ().X = value;
+
 		Vector2 pushDown = new Vector2 (0, Random.Range(-10, -40));
-
-		GameObject bubble = Instantiate(bubblePrefab, new Vector3(pos, 7, 0), Quaternion.identity) as GameObject;
 		bubble.GetComponent<Rigidbody2D> ().AddForce (pushDown);
-		bubble.transform.parent = this.transform;
-		bubble.GetComponent<Bubble> ().x = value;
-
-		if (isCorrect)
-			bubble.GetComponent<Bubble> ().isCorrect = true;
-		else
-			bubble.tag = "WrongBubble";
 	}
 
 	void BubbleSpawn (float pos, string value, bool isCorrect){
+		GameObject bubble = BubbleInst (pos, isCorrect);
+		bubble.GetComponent<Bubble> ().X1X2 = value;
 
-		GameObject bubble = Instantiate(bubblePrefab, new Vector3(pos, 7, 0), Quaternion.identity) as GameObject;
-		bubble.transform.parent = this.transform;
-		bubble.GetComponent<Bubble> ().x1x2 = value;
-		bubble.GetComponent<Rigidbody2D> ().velocity = new Vector3(0, -0.35f, 0);
+		bubble.GetComponent<Rigidbody2D> ().velocity = new Vector2(0, -0.35f);
 		bubble.GetComponent<SpriteRenderer> ().color = Color.HSVToRGB (Random.Range (0f, 1f), 0.4f, 1);
+	}
+
+	GameObject BubbleInst (float x, bool isCorrect){
+		GameObject bubble = Instantiate(bubblePrefab, new Vector2(x, 7), Quaternion.identity) as GameObject;
+		bubble.transform.parent = this.transform;
 
 		if (isCorrect)
-			bubble.GetComponent<Bubble> ().isCorrect = true;
+			bubble.GetComponent<Bubble> ().IsCorrect = true;
 		else
 			bubble.tag = "WrongBubble";
+
+		return bubble;
 	}
 
 	void GameEnd (){		
@@ -197,8 +205,10 @@ public class BubbleGame : MonoBehaviour {
 			resultMessage = "Отличная работа! \r\n\r\nВы набрали " + score + " очков.";
 		else 
 			resultMessage = "Потрясающий результат, Вы не сделали ни одной ошибки! \r\n\r\nВы набрали " + score + " очков.";
-		if (score > GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().minigameRecord [Menu.castle - 1])
-			GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().minigameRecord [Menu.castle - 1] = score;
+		
+		PlayerData playerInfo = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
+		if (score > playerInfo.MinigameRecord [Menu.castle - 1])
+			playerInfo.MinigameRecord [Menu.castle - 1] = score;
 		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMessage;
 	}
 }

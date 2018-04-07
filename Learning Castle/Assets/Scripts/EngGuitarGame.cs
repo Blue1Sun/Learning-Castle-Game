@@ -7,7 +7,10 @@ using UnityEngine.UI;
 
 public class EngGuitarGame : MonoBehaviour {
 
-	public int numOfRounds = 10;
+	[SerializeField]
+	private int numOfRounds = 10;
+	[SerializeField]
+	private GameObject line = null;
 
 	private class EngRusDict
 	{	
@@ -17,6 +20,26 @@ public class EngGuitarGame : MonoBehaviour {
 
 		private bool isUsed;
 		private int correctAnswer;
+
+		public string EngWord{
+			get	{ return engWord; }
+			set	{ engWord = value; }
+		}
+
+		public string[] RusWords{
+			get	{ return rusWords; }
+			set	{ rusWords = value; }
+		}
+
+		public bool IsUsed{
+			get	{ return isUsed; }
+			set	{ isUsed = value; }
+		}
+
+		public int CorrectAnswer{
+			get	{ return correctAnswer; }
+			set	{ correctAnswer = value; }
+		}
 
 		public EngRusDict(string engWord, string rusWord1, string rusWord2, string rusWord3, string rusWord4, int correctAnswer){
 			this.engWord = engWord;
@@ -29,25 +52,7 @@ public class EngGuitarGame : MonoBehaviour {
 			isUsed = false;
 			this.correctAnswer = correctAnswer;
 		}
-
-		public void setIsUsed(bool isUsed){
-			this.isUsed = isUsed;
-		}
-		public bool getIsUsed(){
-			return isUsed;
-		}
-
-		public int getCorrectAnswer(){
-			return correctAnswer;
-		}
-
-		public string getEngWord(){
-			return engWord;
-		}
-
-		public string getRusWord(int index){
-			return rusWords[index];
-		}
+			
 	};
 
 	private int curRound;
@@ -76,7 +81,6 @@ public class EngGuitarGame : MonoBehaviour {
 	void Update () {
 		if (curRound <= numOfRounds) {
 			if (Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.LeftArrow)) {
-				Destroy (GameObject.Find ("Line"));
 				AnimateArrow ("LeftArrow");
 			} else if (Input.GetKeyDown (KeyCode.S) || Input.GetKeyDown (KeyCode.DownArrow)) {
 				AnimateArrow ("DownArrow");
@@ -85,10 +89,11 @@ public class EngGuitarGame : MonoBehaviour {
 			} else if (Input.GetKeyDown (KeyCode.D) || Input.GetKeyDown (KeyCode.RightArrow)) {
 				AnimateArrow ("RightArrow");
 			}
-
-			if (GameObject.Find ("Line") && GameObject.Find ("Line").GetComponent<Transform> ().position.y < -3.5f)
-				NextRound ();
 		}
+	}
+
+	void OnTriggerEnter2D(Collider2D collider) {
+		NextRound ();
 	}
 
 	void DictionaryCreation(){
@@ -130,39 +135,60 @@ public class EngGuitarGame : MonoBehaviour {
 		engRusDict [29] = new EngRusDict ("daze", "бухта", "двор", "ловкость", "изумление", 3);
 	}
 
+	void NextRound(){
+		curRound++;
+
+		GameObject Line = GameObject.Find ("Line");
+		Destroy (Line);
+
+		if (curRound <= numOfRounds) {
+			GameObject newLine = Instantiate (line, new Vector2 (0, 3.7f), Quaternion.identity) as GameObject;	
+			newLine.name = "Line";
+
+			loadInfo ();
+		} 
+		else {
+			GameEnd ();
+		}
+	}
+
 	void loadInfo(){
 		int randNum = -1;
 		do {
 			randNum = Random.Range (0, engRusDict.Length - 1);
-		} while (engRusDict [randNum].getIsUsed() == true);
-		engRusDict [randNum].setIsUsed (true);
+		} while (engRusDict [randNum].IsUsed == true);
+		engRusDict [randNum].IsUsed = true;
 
 		EngRusDict randWord = engRusDict [randNum];
 
 		GameObject.Find ("Rounds").GetComponent<Text> ().text = curRound + " / " + numOfRounds;
 
-		GameObject.Find ("EnglishWord").GetComponent<Text> ().text = randWord.getEngWord ();
+		GameObject.Find ("EnglishWord").GetComponent<Text> ().text = randWord.EngWord;
 
-		GameObject.Find ("LeftPos").GetComponentInChildren<Text> ().text = randWord.getRusWord(0);
-		GameObject.Find ("DownPos").GetComponentInChildren<Text> ().text = randWord.getRusWord(1);
-		GameObject.Find ("UpPos").GetComponentInChildren<Text> ().text = randWord.getRusWord(2);
-		GameObject.Find ("RightPos").GetComponentInChildren<Text> ().text = randWord.getRusWord(3);
+		GameObject.Find ("LeftPos").GetComponentInChildren<Text> ().text = randWord.RusWords[0];
+		GameObject.Find ("DownPos").GetComponentInChildren<Text> ().text = randWord.RusWords[1];
+		GameObject.Find ("UpPos").GetComponentInChildren<Text> ().text = randWord.RusWords[2];
+		GameObject.Find ("RightPos").GetComponentInChildren<Text> ().text = randWord.RusWords[3];
 
+		GameObject leftArrow = GameObject.Find ("LeftArrow");
+		GameObject downArrow = GameObject.Find ("DownArrow");
+		GameObject upArrow = GameObject.Find ("UpArrow");
+		GameObject rightArrow = GameObject.Find ("RightArrow");
 
-		GameObject.Find ("LeftArrow").tag = GameObject.Find ("DownArrow").tag = GameObject.Find ("UpArrow").tag = GameObject.Find ("RightArrow").tag = "Untagged";
+		leftArrow.tag = downArrow.tag = upArrow.tag = rightArrow.tag = "Untagged";
 
-		switch (engRusDict [randNum].getCorrectAnswer()) {
+		switch (engRusDict [randNum].CorrectAnswer) {
 		case 0: 
-			GameObject.Find ("LeftArrow").tag = "CorrectArrow";
+			leftArrow.tag = "CorrectArrow";
 			break;
 		case 1: 
-			GameObject.Find ("DownArrow").tag = "CorrectArrow";
+			downArrow.tag = "CorrectArrow";
 			break;
 		case 2: 
-			GameObject.Find ("UpArrow").tag = "CorrectArrow";
+			upArrow.tag = "CorrectArrow";
 			break;
 		case 3: 
-			GameObject.Find ("RightArrow").tag = "CorrectArrow";
+			rightArrow.tag = "CorrectArrow";
 			break;
 		default:
 			Debug.LogWarning ("Wrong index of correct answer");
@@ -196,23 +222,6 @@ public class EngGuitarGame : MonoBehaviour {
 		NextRound ();
 	}
 
-	void NextRound(){
-		curRound++;
-
-		GameObject Line = GameObject.Find ("Line");
-		Destroy (Line);
-
-		if (curRound <= numOfRounds) {
-			GameObject newLine = Instantiate (Line, new Vector3 (0, 3.7f, 0), Quaternion.identity) as GameObject;	
-			newLine.name = "Line";
-
-			loadInfo ();
-		} 
-		else {
-			GameEnd ();
-		}
-	}
-
 	void GameEnd (){		
 		string resultMessage;
 
@@ -224,8 +233,10 @@ public class EngGuitarGame : MonoBehaviour {
 			resultMessage = "Отличная работа! \r\n\r\nВы набрали " + score + " очков.";
 		else 
 			resultMessage = "Потрясающий результат, Вы не сделали ни одной ошибки! \r\n\r\nВы набрали " + score + " очков.";
-		if (score > GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().minigameRecord [Menu.castle - 1])
-			GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().minigameRecord [Menu.castle - 1] = score;
+		
+		PlayerData playerData = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
+		if (score > playerData.MinigameRecord [Menu.castle - 1])
+			playerData.MinigameRecord [Menu.castle - 1] = score;
 		
 		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMessage;
 

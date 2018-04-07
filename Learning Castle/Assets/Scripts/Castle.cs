@@ -7,22 +7,26 @@ using UnityEngine.SceneManagement;
 
 public class Castle : MonoBehaviour {
 
-	public static bool[] hasMinigame = { true, true, true, true, false }; //TODO: don't forget to fill it!!!
+	public static bool[] hasMinigame = { true, true, true, true, false }; //FILLME: don't forget to fill it!!!
 
-	public Text text;
-	public string castleName = "NoName";
-	public Color nameColor = Color.white;
-	public Sprite completedCastle;
-	public int castleNum = 0;
+	[SerializeField]
+	private Text text = null;
+	[SerializeField]
+	private string castleName = "NoName";
+	[SerializeField]
+	private Color nameColor = Color.white;
+	[SerializeField]
+	private Sprite completedCastle = null;
+	[SerializeField]
+	private int castleNum = 0;
 
-	private float fadeTime = 5;
 	private bool mouseOver = false;
 
 	void Start () {
 		text.color = Color.clear; 
 		text.text = castleName;	
 
-		bool[] isCompleted = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().isCompleted;
+		bool[] isCompleted = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().IsCompleted;
 		if (isCompleted [castleNum - 1]) {
 			this.GetComponent<SpriteRenderer> ().sprite = completedCastle;
 		}
@@ -30,9 +34,14 @@ public class Castle : MonoBehaviour {
 		
 	void Update () {
 		if (mouseOver)
-			text.color = Color.Lerp (text.color, nameColor, fadeTime * Time.deltaTime);
+			rulesFading (nameColor);
 		else
-			text.color = Color.Lerp (text.color, Color.clear, fadeTime * Time.deltaTime);
+			rulesFading (Color.clear);
+	}
+
+	void rulesFading(Color after){
+		float fadeTime = 5;
+		text.color = Color.Lerp (text.color, after, fadeTime * Time.deltaTime);
 	}
 
 	public void OnMouseOver()

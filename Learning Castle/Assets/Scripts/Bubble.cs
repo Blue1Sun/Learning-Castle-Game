@@ -6,21 +6,41 @@ using UnityEngine.UI;
 
 public class Bubble : MonoBehaviour {
 
-	public AudioClip pop;
+	[SerializeField]
+	private AudioClip pop = null;
 
-	public int x;
-	public bool isCorrect = false;
-	public string x1x2 = "";
+	private BubbleGame minigame;
+
+	private int x;
+	private bool isCorrect = false;
+	private string x1x2 = "";
+
+	public int X {
+		get	{ return x;	}
+		set	{ x = value; }
+	}
+
+	public bool IsCorrect {
+		get	{ return isCorrect;	}
+		set	{ isCorrect = value; }
+	}
+
+	public string X1X2 {
+		get	{ return x1x2;	}
+		set	{ x1x2 = value; }
+	}
 
 	void Start () {
 		this.GetComponentInChildren<Text>().text = x.ToString ();
 		if (x1x2 != "")
 			this.GetComponentInChildren<Text>().text = x1x2;
+
+		minigame = GameObject.Find ("MiniGame").GetComponent<BubbleGame> ();
 	}
 
 	void Update () {
 		if (this.isCorrect && this.transform.position.y < -5) {
-			BubbleGame.score--;
+			minigame.Score--;
 			DestroyingBubbles ();
 			Destroy (gameObject);
 			ScoreUpdate ();
@@ -30,10 +50,10 @@ public class Bubble : MonoBehaviour {
 	void OnMouseDown () {
 		AudioSource.PlayClipAtPoint (pop, Camera.main.transform.position);
 		if (isCorrect) {
-			BubbleGame.score++;
+			minigame.Score++;
 			DestroyingBubbles ();
 		} else {
-			BubbleGame.score--;
+			minigame.Score--;
 		}
 		Destroy (gameObject);
 		ScoreUpdate ();
@@ -41,7 +61,7 @@ public class Bubble : MonoBehaviour {
 
 	void ScoreUpdate () {
 		Text scoreText = GameObject.Find ("Score").GetComponent<Text>();
-		scoreText.text = BubbleGame.score.ToString ();
+		scoreText.text = minigame.Score.ToString ();
 	}
 
 	void DestroyingBubbles () {

@@ -11,32 +11,34 @@ public class Menu : MonoBehaviour {
 
 	private Image rulesImage;
 	private Text rulesText;
+
 	private bool mouseOver = false;
-	private float fadeTime = 5;
 
 	void Start(){
 		PlayerData playerData = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
-		bool testCompleted = playerData.completedTests [castle - 1];
-		string minigameRules;
+		bool testCompleted = playerData.CompletedTests [castle - 1];
 
-		rulesText = GameObject.Find ("Rules").GetComponentInChildren<Text> ();
-		rulesImage = GameObject.Find ("Rules").GetComponent<Image> ();	
+		GameObject rules = GameObject.Find ("Rules");
+		rulesText = rules.GetComponentInChildren<Text> ();
+		rulesImage = rules.GetComponent<Image> ();	
+
 		rulesText.color = rulesImage.color = Color.clear;
 
 		setMinigameRule (playerData);
 
 		// Test button
 		if (testCompleted) {
-			GameObject.Find ("Test").GetComponent<Button> ().interactable = false;
-			GameObject.Find ("Test").GetComponentInChildren<Text> ().color = new Color (0.2f, 0.2f, 0.2f, 0.5f);
+			GameObject test = GameObject.Find ("Test");
+			test.GetComponent<Button> ().interactable = false;
+			test.GetComponentInChildren<Text> ().color = new Color (0.2f, 0.2f, 0.2f, 0.5f);
 		}
 
-		if (playerData.completedTests [castle - 1] && (playerData.minigameRecord [castle - 1] != -100 || !Castle.hasMinigame [castle - 1]))
-			playerData.isCompleted [castle - 1] = true;
+		if (playerData.CompletedTests [castle - 1] && (playerData.MinigameRecord [castle - 1] != -100 || !Castle.hasMinigame [castle - 1]))
+			playerData.IsCompleted [castle - 1] = true;
 	}
 
 	void setMinigameRule(PlayerData playerData){
-		//TODO: don't forget to fill it!!!
+		//FILLME: don't forget to fill it!!!
 		string[] minigameRules = new string[]{ "Нажимайте на пузырьки, которые содержат число, соответствующее квадратному корню в задании.", 
 			"Нажимайте на облака, которые содержат два корня, соответствующие ответу на квадратное уравнение.", 
 			"Выберете уравнение, соответствующее представленному графику.", 
@@ -54,19 +56,23 @@ public class Menu : MonoBehaviour {
 
 			Debug.LogWarning ("No rule for " +  castle + " minigame");
 		}
-		if (playerData.minigameRecord [castle - 1] > -100)
-			minigameRule += " <b>Ваш текущий рекорд: " + playerData.minigameRecord [castle - 1] + "</b>";
+		if (playerData.MinigameRecord [castle - 1] > -100)
+			minigameRule += " <b>Ваш текущий рекорд: " + playerData.MinigameRecord [castle - 1] + "</b>";
 		rulesText.text = minigameRule;
 	}
 
 	void Update () {
 		if (mouseOver) {
-			rulesText.color = Color.Lerp (rulesText.color, Color.black, fadeTime * Time.deltaTime);
-			rulesImage.color = Color.Lerp (rulesImage.color, new Color(1, 1, 1, 0.5f) , fadeTime * Time.deltaTime);
+			rulesFading (Color.black, new Color (1, 1, 1, 0.5f));
 		} else {
-			rulesText.color = Color.Lerp (rulesText.color, Color.clear, fadeTime * Time.deltaTime);
-			rulesImage.color = Color.Lerp (rulesImage.color, Color.clear, fadeTime * Time.deltaTime);
+			rulesFading (Color.clear, Color.clear);
 		}
+	}
+
+	void rulesFading(Color text, Color panel){
+		float fadeTime = 5;
+		rulesText.color = Color.Lerp (rulesText.color, text, fadeTime * Time.deltaTime);
+		rulesImage.color = Color.Lerp (rulesImage.color, panel, fadeTime * Time.deltaTime);
 	}
 
 	public void LoadGame(){		
@@ -79,7 +85,7 @@ public class Menu : MonoBehaviour {
 		else {
 			Debug.LogWarning ("No minigame for " + castle + " castle");
 		}	
-		// TODO: don't forget to fill it with new minigames!!!
+		// FILLME: don't forget to fill it with new minigames!!!
 	}
 
 	public void ExitMenu(){
@@ -87,6 +93,7 @@ public class Menu : MonoBehaviour {
 			SceneManager.LoadScene ("Map");
 		else
 			SceneManager.LoadScene ("Map 1");
+		// FILLME: don't forget to fill it with new maps!
 	}
 
 	public void OnMouseOver()
