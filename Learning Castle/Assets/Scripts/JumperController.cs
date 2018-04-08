@@ -115,6 +115,7 @@ public class JumperController : MonoBehaviour {
 
 	//Starting with moving
 	void OnTriggerStay2D(Collider2D collider) {
+		Debug.Log ("OnTriggerStay2D");
 		if (collider.name == "Start" && moving == true) {
 			this.transform.position += Vector3.right * 2 * Time.deltaTime;
 		}
