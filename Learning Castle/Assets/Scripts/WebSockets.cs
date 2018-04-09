@@ -14,24 +14,12 @@ public class WebSockets : MonoBehaviour {
 	private bool isSocket = false;
 
 	private WebSocket socket;    
-    //User user = new User();
 
-    /*public class User
+    public class Message
     {
-        public int status;
-        public int id;
-
-        public void Clear()
-        {
-           
-        }
-    }*/
-
-    private class Message
-    {
-		private int code = 1;
-		private string login;
-		private string password;
+		public int code = 1;
+		public string login;
+		public string password;
 
 		public string Login {
 			get	{ return login;	}
@@ -69,7 +57,7 @@ public class WebSockets : MonoBehaviour {
 			PlayerData user = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
 
 			socket.OnMessage += (sender, e) => {
-				Debug.Log (e.Data);
+				Debug.Log ("WEB: " + e.Data);
 
 				JsonUtility.FromJsonOverwrite (e.Data, user);
 			};
@@ -85,8 +73,6 @@ public class WebSockets : MonoBehaviour {
 			} else {
 				Debug.Log ("NOT OK");
 				socket.Close ();
-				//Debug.Log(user.status);
-				//Debug.Log(user.id);
 			}
 		} 
 		else {

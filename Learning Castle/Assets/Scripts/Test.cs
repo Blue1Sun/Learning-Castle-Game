@@ -9,32 +9,13 @@ using WebSocketSharp;
 
 public class Test : MonoBehaviour {
 
-	private class QuestionInfo
+	[System.Serializable]
+	public class QuestionInfo
 	{
-		private int type; // 1 - oneA, 2 - manyA, 3 - textA
-		private int id;
-		private string question;
-		private string[] answers;
-
-		public int Type{
-			get	{ return type; }
-			set	{ type = value; }
-		}
-
-		public int Id{
-			get	{ return id; }
-			set	{ id = value; }
-		}
-
-		public string Question{
-			get	{ return question; }
-			set	{ question = value; }
-		}
-
-		public string[] Answers{
-			get	{ return answers; }
-			set	{ answers = value; }
-		}
+		public int type; // 1 - oneA, 2 - manyA, 3 - textA
+		public int id;
+		public string question;
+		public string[] answers;
 
 		public QuestionInfo(int type, int id, string question, string[] answers)
 		{
@@ -47,10 +28,10 @@ public class Test : MonoBehaviour {
 
 	public class PlayerAnswers
 	{
-		private int userId;
-		private int code = 2; // for socket
-		private string[] answers;
-		private int[] idOrder;
+		public int userId;
+		public int code = 2; // for socket
+		public string[] answers;
+		public int[] idOrder;
 
 		public int UserId{
 			get	{ return userId; }
@@ -98,7 +79,7 @@ public class Test : MonoBehaviour {
 	private int qtype;
 	private int curQuestion;
 
-	private QuestionInfo[] questions;
+	public QuestionInfo[] questions;
 	private PlayerAnswers playerAnswers;
 
 	void Start () {
@@ -121,15 +102,41 @@ public class Test : MonoBehaviour {
 		NextQuestion ();
 	}
 
+	private class Message{
+		public int code = 3;
+		public int topic = Menu.castle;
+	}
+
 	//TODO Loading questions from server
 	void QuestionsCreation()
 	{
-		int numOfQuestions = 7;
+		//int numOfQuestions = 7;
+		#region SOCKET STUFF
 
-		questions = new QuestionInfo[numOfQuestions]; 
-		playerAnswers = new PlayerAnswers(numOfQuestions); 
+		Message message = new Message ();
 
-		questions [0] = new QuestionInfo (1, 823, "Question", new string[] { "a1","a2","a3", "a4" });
+		WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
+		socket.Connect();
+
+		string jsonmessage = JsonUtility.ToJson (message);
+		socket.Send (jsonmessage);
+
+		string testInfo = "";
+
+		socket.OnMessage += (sender, e) => {
+			testInfo = "{\r\n    \"Items\": "+ e.Data + "\r\n}";
+		};
+
+		System.Threading.Thread.Sleep (500);
+
+		testInfo = testInfo.Replace("sqrt", "√");
+		questions = JSONHelper.FromJson<QuestionInfo>(testInfo);
+
+		#endregion
+
+		playerAnswers = new PlayerAnswers(questions.Length); 
+
+		/*questions [0] = new QuestionInfo (1, 823, "Question", new string[] { "a1","a2","a3", "a4" });
 		questions [1] = new QuestionInfo (1, 589, "Yes or no?", new string[] { "yes","no" });
 		questions [2] = new QuestionInfo (1, 753, "Bear, horse or duck?", new string[] { "bear", "horse", "duck" });
 
@@ -137,10 +144,10 @@ public class Test : MonoBehaviour {
 		questions [5] = new QuestionInfo (2, 121, "Yes, YES?", new string[] { "yes","YES" });
 		questions [4] = new QuestionInfo (2, 537, "Um hum?", new string[] { "mhm", "hmhm", "mhmmhm" });
 
-		questions [6] = new QuestionInfo (3, 45, "Questionnn", null);
+		questions [6] = new QuestionInfo (3, 45, "Questionnn", null);*/
 
 		for (int i = 0; i < questions.Length; i++)
-			playerAnswers.IdOrder [i] = questions [i].Id;
+			playerAnswers.IdOrder [i] = questions [i].id;
 
 		for (int i = 0; i < questions.Length; i++)
 			playerAnswers.Answers [i] = "";
@@ -169,7 +176,7 @@ public class Test : MonoBehaviour {
 		
 		curQuestion--;
 
-		qtype = questions [curQuestion].Type;
+		qtype = questions [curQuestion].type;
 		ChangeLayout (qtype);
 
 		Debug.Log (playerAnswers.toString());
@@ -189,7 +196,7 @@ public class Test : MonoBehaviour {
 			FinishTest ();
 		}
 		else {
-			qtype = questions [curQuestion].Type;
+			qtype = questions [curQuestion].type;
 			ChangeLayout (qtype);
 		}
 
@@ -200,12 +207,12 @@ public class Test : MonoBehaviour {
 		GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().CompletedTests [Menu.castle - 1] = true;
 
 		#region SOCKET STUFF
-		/*
+
 			WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
 			socket.Connect();
 			string jsonmessage = JsonUtility.ToJson(playerAnswers);
 			socket.Send(jsonmessage);
-			*/
+			
 		#endregion
 
 		SceneManager.LoadScene ("Menu");
@@ -242,14 +249,14 @@ public class Test : MonoBehaviour {
 
 
 		GameObject.Find ("QNum").GetComponent<Text> ().text = "Вопрос №" + (curQuestion + 1) + " из " + questions.Length;
-		GameObject.Find ("Question").GetComponent<Text> ().text = questions [curQuestion].Question;
+		GameObject.Find ("Question").GetComponent<Text> ().text = questions [curQuestion].question;
 
 		if (qtype == 2 || qtype == 1) {
 			toggles.SetActive (true);
 			longAnsw.SetActive (false);
 
-			GameObject.Find ("1Answer").GetComponentInChildren<Text> ().text = questions [curQuestion].Answers [0];
-			GameObject.Find ("2Answer").GetComponentInChildren<Text> ().text = questions [curQuestion].Answers [1];
+			GameObject.Find ("1Answer").GetComponentInChildren<Text> ().text = questions [curQuestion].answers [0];
+			GameObject.Find ("2Answer").GetComponentInChildren<Text> ().text = questions [curQuestion].answers [1];
 
 			GameObject answer3Obj = answer3.gameObject;
 			GameObject answer4Obj = answer4.gameObject;
@@ -257,21 +264,21 @@ public class Test : MonoBehaviour {
 			answer3Obj.SetActive (false);
 			answer4Obj.SetActive (false);
 
-			if (questions [curQuestion].Answers.Length > 2) {		
+			if (questions [curQuestion].answers.Length > 2) {		
 				answer3Obj.SetActive (true);
-				GameObject.Find ("3Answer").GetComponentInChildren<Text> ().text = questions [curQuestion].Answers [2];
+				GameObject.Find ("3Answer").GetComponentInChildren<Text> ().text = questions [curQuestion].answers [2];
 			} 
 
-			if (questions [curQuestion].Answers.Length > 3) {
+			if (questions [curQuestion].answers.Length > 3) {
 				answer4Obj.SetActive (true);
-				GameObject.Find ("4Answer").GetComponentInChildren<Text> ().text = questions [curQuestion].Answers [3];
+				GameObject.Find ("4Answer").GetComponentInChildren<Text> ().text = questions [curQuestion].answers [3];
 			}
 		}
 		else {
 			toggles.SetActive(false);
 			longAnsw.SetActive (true);
 
-			GameObject.Find ("PlayerInput").GetComponent<Text> ().text = playerAnswers.Answers [curQuestion];
+			GameObject.Find ("InputAnswer").GetComponent<InputField> ().text = playerAnswers.Answers [curQuestion];
 		}
 			
 		if (qtype == 2) {
