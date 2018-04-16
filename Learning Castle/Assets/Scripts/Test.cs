@@ -106,32 +106,31 @@ public class Test : MonoBehaviour {
 		public int code = 3;
 		public int topic = Menu.castle;
 	}
-
-	//TODO Loading questions from server
+		
 	void QuestionsCreation()
 	{
 		//int numOfQuestions = 7;
 		#region SOCKET STUFF
+		if (WebSockets.isSocket){
+			Message message = new Message ();
 
-		Message message = new Message ();
+			WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
+			socket.Connect();
 
-		WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
-		socket.Connect();
+			string jsonmessage = JsonUtility.ToJson (message);
+			socket.Send (jsonmessage);
 
-		string jsonmessage = JsonUtility.ToJson (message);
-		socket.Send (jsonmessage);
+			string testInfo = "";
 
-		string testInfo = "";
+			socket.OnMessage += (sender, e) => {
+				testInfo = "{\r\n    \"Items\": "+ e.Data + "\r\n}";
+			};
 
-		socket.OnMessage += (sender, e) => {
-			testInfo = "{\r\n    \"Items\": "+ e.Data + "\r\n}";
-		};
+			System.Threading.Thread.Sleep (500);
 
-		System.Threading.Thread.Sleep (500);
-
-		testInfo = testInfo.Replace("sqrt", "√");
-		questions = JSONHelper.FromJson<QuestionInfo>(testInfo);
-
+			testInfo = testInfo.Replace("sqrt", "√");
+			questions = JSONHelper.FromJson<QuestionInfo>(testInfo);
+		}
 		#endregion
 
 		playerAnswers = new PlayerAnswers(questions.Length); 
@@ -207,12 +206,12 @@ public class Test : MonoBehaviour {
 		GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ().CompletedTests [Menu.castle - 1] = true;
 
 		#region SOCKET STUFF
-
+		if (WebSockets.isSocket){
 			WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
 			socket.Connect();
 			string jsonmessage = JsonUtility.ToJson(playerAnswers);
 			socket.Send(jsonmessage);
-			
+		}			
 		#endregion
 
 		SceneManager.LoadScene ("Menu");

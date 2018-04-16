@@ -42,7 +42,8 @@ public class Menu : MonoBehaviour {
 		string[] minigameRules = new string[]{ "Нажимайте на пузырьки, которые содержат число, соответствующее квадратному корню в задании.", 
 			"Нажимайте на облака, которые содержат два корня, соответствующие ответу на квадратное уравнение.", 
 			"Выберете уравнение, соответствующее представленному графику.", 
-			"Нажимайте на стрелки, под которыми написан перевод заданного слова. Управление WASD и стрелочки." };
+			"Нажимайте на стрелки, под которыми написан перевод заданного слова. Управление WASD и стрелочки.",
+			"Проходите через стену, на которой написан артикль, подходящий пропуску в предложении."};
 		string minigameRule = "";
 
 		if (castle <= minigameRules.Length) {
@@ -77,7 +78,7 @@ public class Menu : MonoBehaviour {
 
 	public void LoadGame(){		
 
-		string[] gameNames = new string[]{ "Bubbles", "Clouds", "Graphs", "EngGuitarHero" };
+		string[] gameNames = new string[]{ "Bubbles", "Clouds", "Graphs", "EngGuitarHero", "Articles" };
 
 		if (castle <= gameNames.Length) {			
 			SceneManager.LoadScene (gameNames [Menu.castle - 1]);

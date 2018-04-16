@@ -10,10 +10,7 @@ using UnityEngine.SceneManagement;
 
 public class WebSockets : MonoBehaviour {
 
-	[SerializeField]
-	private bool isSocket = false;
-
-	private WebSocket socket;    
+	public static bool isSocket = false;
 
     public class Message
     {
@@ -41,7 +38,7 @@ public class WebSockets : MonoBehaviour {
     public void auth()
     {
 		if (isSocket) {
-			socket = new WebSocket ("ws://127.0.0.1:16000");
+			WebSocket socket = new WebSocket ("ws://127.0.0.1:16000");
 			socket.Connect ();
 
 			string login = GameObject.Find ("Login").GetComponent<InputField> ().text;
@@ -67,7 +64,6 @@ public class WebSockets : MonoBehaviour {
 				Debug.Log ("OK");
 
 				Debug.Log (user.toString ());
-				Debug.Log (user.Gender);
 
 				SceneManager.LoadScene ("Subjects");
 			} else {

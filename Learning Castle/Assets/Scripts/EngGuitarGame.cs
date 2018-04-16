@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-
 using UnityEngine;
 using UnityEngine.UI;
+
+using WebSocketSharp;
 
 public class EngGuitarGame : MonoBehaviour {
 
@@ -155,8 +156,8 @@ public class EngGuitarGame : MonoBehaviour {
 	void loadInfo(){
 		int randNum = -1;
 		do {
-			randNum = Random.Range (0, engRusDict.Length - 1);
-		} while (engRusDict [randNum].IsUsed == true);
+			randNum = Random.Range (0, engRusDict.Length);
+		} while (engRusDict [randNum].IsUsed);
 		engRusDict [randNum].IsUsed = true;
 
 		EngRusDict randWord = engRusDict [randNum];
@@ -235,8 +236,24 @@ public class EngGuitarGame : MonoBehaviour {
 			resultMessage = "Потрясающий результат, Вы не сделали ни одной ошибки! \r\n\r\nВы набрали " + score + " очков.";
 		
 		PlayerData playerData = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
-		if (score > playerData.MinigameRecord [Menu.castle - 1])
+
+		if(score > playerData.MinigameRecord [Menu.castle - 1]){
+			#region SOCKET STUFF
+			if(WebSockets.isSocket){
+				UserRecord userRecord = new UserRecord(playerData.Id, Menu.castle, score, numOfRounds); 
+
+				WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
+				socket.Connect();
+
+				string jsonmessage = JsonUtility.ToJson (userRecord);
+				socket.Send (jsonmessage);
+
+				socket.Close();
+			}
+			#endregion
+
 			playerData.MinigameRecord [Menu.castle - 1] = score;
+		}
 		
 		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMessage;
 

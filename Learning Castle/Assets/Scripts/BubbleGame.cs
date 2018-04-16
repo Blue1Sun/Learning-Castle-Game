@@ -212,15 +212,17 @@ public class BubbleGame : MonoBehaviour {
 
 		if(score > playerInfo.MinigameRecord [Menu.castle - 1]){
 			#region SOCKET STUFF
-			UserRecord userRecord = new UserRecord(playerInfo.Id, Menu.castle, score, numOfRounds); 
+			if(WebSockets.isSocket){
+				UserRecord userRecord = new UserRecord(playerInfo.Id, Menu.castle, score, numOfRounds); 
 
-			WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
-			socket.Connect();
+				WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
+				socket.Connect();
 
-			string jsonmessage = JsonUtility.ToJson (userRecord);
-			socket.Send (jsonmessage);
+				string jsonmessage = JsonUtility.ToJson (userRecord);
+				socket.Send (jsonmessage);
 
-			socket.Close();
+				socket.Close();
+			}
 			#endregion
 
 			playerInfo.MinigameRecord [Menu.castle - 1] = score;

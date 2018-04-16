@@ -158,7 +158,6 @@ public class Graphs : MonoBehaviour {
 	}
 
 	void GameEnd(){
-		Debug.Log ("Game end");
 		string resultMessage;
 
 		window.SetActive (true);
@@ -174,15 +173,17 @@ public class Graphs : MonoBehaviour {
 
 		if(score > playerData.MinigameRecord [Menu.castle - 1]){
 			#region SOCKET STUFF
-			UserRecord userRecord = new UserRecord(playerData.Id, Menu.castle, score, numOfRounds); 
+			if(WebSockets.isSocket){
+				UserRecord userRecord = new UserRecord(playerData.Id, Menu.castle, score, numOfRounds); 
 
-			WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
-			socket.Connect();
+				WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
+				socket.Connect();
 
-			string jsonmessage = JsonUtility.ToJson (userRecord);
-			socket.Send (jsonmessage);
+				string jsonmessage = JsonUtility.ToJson (userRecord);
+				socket.Send (jsonmessage);
 
-			socket.Close();
+				socket.Close();
+			}
 			#endregion
 
 			playerData.MinigameRecord [Menu.castle - 1] = score;
