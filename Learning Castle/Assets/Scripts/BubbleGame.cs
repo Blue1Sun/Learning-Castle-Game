@@ -37,6 +37,7 @@ public class BubbleGame : MonoBehaviour {
 		else if (Menu.castle == 2)
 			numOfRounds = 5;
 
+		MoveWalls ();
 		score = 0;
 		curRound = 0;
 
@@ -50,6 +51,12 @@ public class BubbleGame : MonoBehaviour {
 		textRounds.text = "1 / " + numOfRounds;
 
 		exercise = GameObject.Find ("Exercise").GetComponent<Text> ();
+	}
+
+	void MoveWalls(){
+		float position = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0)).x;
+		GameObject.Find ("LeftWall").GetComponent<Transform> ().position = new Vector2 (position - 0.5f, 0);
+		GameObject.Find ("RightWall").GetComponent<Transform> ().position = new Vector2 (-position + 0.5f, 0);
 	}
 
 	void Update () {
@@ -144,7 +151,10 @@ public class BubbleGame : MonoBehaviour {
 		for (int i = 0; i < bubbleNum; i++) {
 			float position;
 			do {
-				position = Random.Range (-7.5f, 7.5f);
+				float width = -Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0)).x;
+				if(Menu.castle == 2)
+					width -= 1;
+				position = Random.Range (-width, width);
 			} while (System.Array.IndexOf (posArr, position) > -1); // All positions need to be different
 			posArr [i] = position;
 		}

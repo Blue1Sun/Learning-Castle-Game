@@ -66,6 +66,8 @@ public class EngGuitarGame : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		ChangeArrowPositions ();
+
 		curRound = 0;
 		score = 0;
 		mistakes = "<b>Исправление ошибок:</b> ";
@@ -76,6 +78,27 @@ public class EngGuitarGame : MonoBehaviour {
 		window.SetActive (false);
 
 		NextRound ();
+	}
+
+	void ChangeArrowPositions(){
+		float position = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0)).x;
+		float width = Screen.width / 4;
+		float padding = -(position * 2) / 7;
+		float spaceBetween = -(position * 2) / 4.2f;
+
+		position += padding;
+		GameObject.Find ("LeftPos").GetComponent<Transform> ().position = new Vector2 (position, -3.5f);
+		position += spaceBetween;
+		GameObject.Find ("DownPos").GetComponent<Transform> ().position = new Vector2 (position, -3.5f);
+		position += spaceBetween;
+		GameObject.Find ("UpPos").GetComponent<Transform> ().position = new Vector2 (position, -3.5f);
+		position += spaceBetween;
+		GameObject.Find ("RightPos").GetComponent<Transform> ().position = new Vector2 (position, -3.5f);
+
+		Transform arrows = GameObject.Find ("Arrows").GetComponent<Transform> ();
+		foreach (Transform child in arrows) {
+			child.GetComponentInChildren<Text>().gameObject.GetComponent<RectTransform> ().sizeDelta = new Vector2 (width, 60);
+		}
 	}
 	
 	// Update is called once per frame

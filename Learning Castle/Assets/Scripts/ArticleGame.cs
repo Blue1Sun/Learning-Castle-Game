@@ -15,8 +15,10 @@ public class ArticleGame : MonoBehaviour {
 	private int numOfRounds = 10;
 	private int score;
 
+	private float scale;
 	private string cGen;
 	private GameObject window;
+	private Transform curWalls;
 
 	private class Task{
 		private string sentence = "";
@@ -51,6 +53,9 @@ public class ArticleGame : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		scale = -Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0)).x / 8.9f;
+		walls.GetComponent<Transform> ().localScale = new Vector3 (scale, scale, 1);
+
 		score = 0;
 		curRound = 0;
 		hearts = 3;
@@ -72,11 +77,18 @@ public class ArticleGame : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if ((Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.LeftArrow)) && GetComponent<Transform> ().position.x >= 0) {
-			GetComponent<Transform> ().position += Vector3.left * 6;
+			GetComponent<Transform> ().position += Vector3.left * 6 * scale;
 		}
 		if ((Input.GetKeyDown (KeyCode.D) || Input.GetKeyDown (KeyCode.RightArrow)) && GetComponent<Transform> ().position.x <= 0) {
-			GetComponent<Transform> ().position += Vector3.right * 6;
+			GetComponent<Transform> ().position += Vector3.right * 6 * scale;
 		}
+
+		if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow))
+			foreach (Transform child in curWalls)
+				child.GetComponent<Rigidbody2D> ().velocity = new Vector2(0, -2f);
+		if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow))
+			foreach (Transform child in curWalls)
+				child.GetComponent<Rigidbody2D> ().velocity = new Vector2(0, -0.8f);			
 	}
 		
 
@@ -101,11 +113,14 @@ public class ArticleGame : MonoBehaviour {
 		GameObject.Find ("Sentence").GetComponent<Text> ().text = tasks [randTask].Sentence;
 		GameObject.Find ("Rounds").GetComponent<Text> ().text = curRound + "/" + numOfRounds;
 
-		foreach (Transform child in GameObject.Find ("Walls").GetComponent<Transform> ()) {
+		curWalls = GameObject.Find ("Walls").GetComponent<Transform> ();
+
+		foreach (Transform child in curWalls) {
 			if (child.name == ("Wall" + tasks [randTask].Article))
 				child.tag = "CorrectWall";
 			else
 				child.tag = "Untagged";
+			child.GetComponent<Rigidbody2D> ().velocity = new Vector2(0, -0.8f);	
 		}
 	}
 
@@ -180,15 +195,17 @@ public class ArticleGame : MonoBehaviour {
 			GameObject.FindGameObjectWithTag ("CorrectWall").GetComponent<Animator> ().Play ("WallFading");
 			GetComponent<Animator> ().Play ("ArticleDamage" + cGen);
 			hearts--;
-			GameObject.Find ("Heart " + (hearts + 1)).GetComponent<RawImage> ().color = new Color (1, 1, 1, 0.5f);
+			GameObject.Find ("Heart " + (hearts + 1)).GetComponent<RawImage> ().color = new Color (1, 1, 1, 0.25f);
 		}
 		Destroy (collider.gameObject);
 
 		GameObject oldWalls = GameObject.Find ("Walls");
 		if (oldWalls) {
 			oldWalls.name = "OldWalls";
-			foreach (Transform child in oldWalls.GetComponent<Transform> ())
+			foreach (Transform child in oldWalls.GetComponent<Transform> ()) {
 				child.gameObject.layer = 9;
+				child.GetComponent<Rigidbody2D> ().velocity = new Vector2(0, -2f);
+			}
 		}
 		NextRound ();
 	}
