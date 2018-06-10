@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using WebSocketSharp;
-
 public class ArticleGame : MonoBehaviour {
 
 	public GameObject walls;
@@ -95,7 +93,7 @@ public class ArticleGame : MonoBehaviour {
 	void NextRound(){
 		curRound++;
 		if (curRound > numOfRounds || hearts == 0)
-			GameEnd ();
+			MiniGame.GameEnd (window, numOfRounds, score, numOfRounds / 2);
 		else {
 			GameObject wallObj = Instantiate (walls, walls.transform.position, Quaternion.identity) as GameObject;
 			wallObj.name = "Walls";
@@ -149,41 +147,6 @@ public class ArticleGame : MonoBehaviour {
 		tasks [17] = new Task ("Could you give me ___ sheet of paper?", "a");
 		tasks [18] = new Task ("Tell him ___ truth.", "the");
 		tasks [19] = new Task ("This is ___ best wine I have ever drunk.", "the");
-	}
-
-	void GameEnd (){		
-		string resultMessage;
-
-		window.SetActive (true);
-
-		if (score <= numOfRounds / 2)
-			resultMessage = "Вам стоит попробовать еще раз. \r\n\r\nВы набрали " + score + " очков.";
-		else if (score > numOfRounds / 2 && score < numOfRounds)
-			resultMessage = "Отличная работа! \r\n\r\nВы набрали " + score + " очков.";
-		else 
-			resultMessage = "Потрясающий результат, Вы не сделали ни одной ошибки! \r\n\r\nВы набрали " + score + " очков.";
-
-		PlayerData playerData = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
-
-		if(score > playerData.MinigameRecord [Menu.castle - 1]){
-			#region SOCKET STUFF
-			if(WebSockets.isSocket){
-				UserRecord userRecord = new UserRecord(playerData.Id, Menu.castle, score, numOfRounds); 
-
-				WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
-				socket.Connect();
-
-				string jsonmessage = JsonUtility.ToJson (userRecord);
-				socket.Send (jsonmessage);
-
-				socket.Close();
-			}
-			#endregion
-
-			playerData.MinigameRecord [Menu.castle - 1] = score;
-		}
-
-		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMessage;
 	}
 
 	void OnTriggerEnter2D(Collider2D collider){

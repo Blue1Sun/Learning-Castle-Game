@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 public class WebSockets : MonoBehaviour {
 
-	public static bool isSocket = false;
+	public static bool isSocket = true;
 
     public class Message
     {
@@ -24,7 +24,7 @@ public class WebSockets : MonoBehaviour {
 		}
 
 		public string Password {
-			get	{ return password;	}
+			get	{ return password; }
 			set	{ password = value; }
 		}
     }

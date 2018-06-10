@@ -109,7 +109,6 @@ public class Test : MonoBehaviour {
 		
 	void QuestionsCreation()
 	{
-		//int numOfQuestions = 7;
 		#region SOCKET STUFF
 		if (WebSockets.isSocket){
 			Message message = new Message ();
@@ -135,7 +134,9 @@ public class Test : MonoBehaviour {
 
 		playerAnswers = new PlayerAnswers(questions.Length); 
 
-		/*questions [0] = new QuestionInfo (1, 823, "Question", new string[] { "a1","a2","a3", "a4" });
+		/* //if no server
+		int numOfQuestions = 7;
+		questions [0] = new QuestionInfo (1, 823, "Question", new string[] { "a1","a2","a3", "a4" });
 		questions [1] = new QuestionInfo (1, 589, "Yes or no?", new string[] { "yes","no" });
 		questions [2] = new QuestionInfo (1, 753, "Bear, horse or duck?", new string[] { "bear", "horse", "duck" });
 
@@ -153,8 +154,7 @@ public class Test : MonoBehaviour {
 	}
 
 	void setTestTitle(){
-		//FILLME: don't forget to fill it!!!
-		string[] testTitles = new string[]{ "Квадратный корень", "Квадратные уравнения", "Графики", "Словарный запас", "Артикли" };
+		string[] testTitles = new string[]{ "Квадратный корень", "Квадратные уравнения", "Графики", "Словарный запас", "Артикли", "Present Perfect" };
 
 		Text title = GameObject.Find ("Title").GetComponent<Text> ();
 		if (Menu.castle <= testTitles.Length) {

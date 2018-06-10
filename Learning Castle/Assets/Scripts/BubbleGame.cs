@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using WebSocketSharp;
-
 public class BubbleGame : MonoBehaviour {
 
 	[SerializeField]
@@ -66,7 +64,7 @@ public class BubbleGame : MonoBehaviour {
 				curRound++;
 			}
 			else {
-				GameEnd ();
+				MiniGame.GameEnd (window, numOfRounds, score, 0);
 			}
 			textRounds.text = curRound + " / " + numOfRounds;
 		}
@@ -205,39 +203,5 @@ public class BubbleGame : MonoBehaviour {
 
 		return bubble;
 	}
-
-	void GameEnd (){		
-		string resultMessage;
-
-		window.SetActive (true);
-
-		if (score <= 0)
-			resultMessage = "Вам стоит попробовать еще раз. \r\n\r\nВы набрали " + score + " очков.";
-		else if (score > 0 && score < numOfRounds)
-			resultMessage = "Отличная работа! \r\n\r\nВы набрали " + score + " очков.";
-		else 
-			resultMessage = "Потрясающий результат, Вы не сделали ни одной ошибки! \r\n\r\nВы набрали " + score + " очков.";
-
-		PlayerData playerInfo = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
-
-		if(score > playerInfo.MinigameRecord [Menu.castle - 1]){
-			#region SOCKET STUFF
-			if(WebSockets.isSocket){
-				UserRecord userRecord = new UserRecord(playerInfo.Id, Menu.castle, score, numOfRounds); 
-
-				WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
-				socket.Connect();
-
-				string jsonmessage = JsonUtility.ToJson (userRecord);
-				socket.Send (jsonmessage);
-
-				socket.Close();
-			}
-			#endregion
-
-			playerInfo.MinigameRecord [Menu.castle - 1] = score;
-		}
-			
-		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMessage;
-	}
+		
 }

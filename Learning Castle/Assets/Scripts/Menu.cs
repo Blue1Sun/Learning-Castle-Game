@@ -38,7 +38,6 @@ public class Menu : MonoBehaviour {
 	}
 
 	void setMinigameRule(PlayerData playerData){
-		//FILLME: don't forget to fill it!!!
 		string[] minigameRules = new string[]{ "Нажимайте на пузырьки, которые содержат число, соответствующее квадратному корню в задании.", 
 			"Нажимайте на облака, которые содержат два корня x1 и x2, соответствующие ответам на квадратное уравнение.", 
 			"Выберете уравнение, соответствующее представленному справа графику. Лыжник полетит по выбранному вами уравнению.", 
@@ -86,7 +85,6 @@ public class Menu : MonoBehaviour {
 		else {
 			Debug.LogWarning ("No minigame for " + castle + " castle");
 		}	
-		// FILLME: don't forget to fill it with new minigames!!!
 	}
 
 	public void ExitMenu(){
@@ -94,7 +92,6 @@ public class Menu : MonoBehaviour {
 			SceneManager.LoadScene ("Map");
 		else
 			SceneManager.LoadScene ("Map 1");
-		// FILLME: don't forget to fill it with new maps!
 	}
 
 	public void OnMouseOver()

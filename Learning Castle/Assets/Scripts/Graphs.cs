@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using WebSocketSharp;
-
 public class Graphs : MonoBehaviour {
 
 	public int numOfDots;
@@ -56,17 +54,15 @@ public class Graphs : MonoBehaviour {
 			RandomGraphs ();
 		} 
 		else {
-			GameEnd ();
+			MiniGame.GameEnd (window, numOfRounds, score, numOfRounds / 2);
 		}
 	}
 
 	void RandomGraphs(){
 		aArr = new int[3];
 		kArr = new float[3];
-		//bArr = new int[3];
 
 		int a = 0;
-		//int b = 0;
 		float k  = 0;
 
 		for (int i = 0; i < 3; i++) {
@@ -74,10 +70,9 @@ public class Graphs : MonoBehaviour {
 				a = Random.Range (-3, 3);
 				//b = Random.Range (-3, 3);
 				k = Random.Range (1, 5) * 0.5f;
-			} while ((aArr [0] == a && kArr [0] == k) || (aArr [1] == a && kArr [1] == k)); // добавить условие про b
+			} while ((aArr [0] == a && kArr [0] == k) || (aArr [1] == a && kArr [1] == k));
 			aArr [i] = a;
 			kArr [i] = k;
-			//bArr [i] = b;
 
 			GameObject.Find ((i + 1) + " Graph").GetComponentInChildren<Text> ().text = GraphString (a, k);	
 		}
@@ -156,41 +151,5 @@ public class Graphs : MonoBehaviour {
 			x += step; 
 		} while (x <= 3.5f);
 	}
-
-	void GameEnd(){
-		string resultMessage;
-
-		window.SetActive (true);
-
-		if (score <= numOfRounds / 2)
-			resultMessage = "Вам стоит попробовать еще раз. \r\n\r\nВы набрали " + score + " очков.";
-		else if (score > numOfRounds / 2 && score < numOfRounds)
-			resultMessage = "Отличная работа! \r\n\r\nВы набрали " + score + " очков.";
-		else 
-			resultMessage = "Потрясающий результат, Вы не сделали ни одной ошибки! \r\n\r\nВы набрали " + score + " очков.";
-
-		PlayerData playerData = GameObject.Find ("PlayerInfo").GetComponent<PlayerData> ();
-
-		if(score > playerData.MinigameRecord [Menu.castle - 1]){
-			#region SOCKET STUFF
-			if(WebSockets.isSocket){
-				UserRecord userRecord = new UserRecord(playerData.Id, Menu.castle, score, numOfRounds); 
-
-				WebSocket socket = new WebSocket("ws://127.0.0.1:16000");
-				socket.Connect();
-
-				string jsonmessage = JsonUtility.ToJson (userRecord);
-				socket.Send (jsonmessage);
-
-				socket.Close();
-			}
-			#endregion
-
-			playerData.MinigameRecord [Menu.castle - 1] = score;
-		}
-
-		GameObject.Find("ResultMessage").GetComponent<Text>().text = resultMessage;
-
-	}
-					
+									
 }
